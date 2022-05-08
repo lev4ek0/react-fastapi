@@ -27,7 +27,7 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 
 
-@app.post(WEBHOOK_PATH)
+@app.post('/webhook')
 async def bot_webhook(update: dict):
     telegram_update = types.Update(**update)
     Dispatcher.set_current(dp)
