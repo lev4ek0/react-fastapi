@@ -27,7 +27,7 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return "ok"
+    return WEBAPP_PORT
 
 
 async def on_startup(dispatcher):
