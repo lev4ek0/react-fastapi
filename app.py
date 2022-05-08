@@ -1,10 +1,11 @@
 import logging
 import os
+
 from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils.executor import start_webhook
 from aiogram import Bot, types
-
+from fastapi import FastAPI
 
 TOKEN = os.getenv('BOT_TOKEN')
 bot = Bot(token=TOKEN)
@@ -35,14 +36,20 @@ async def echo(message: types.Message):
     await message.answer(message.text)
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    start_webhook(
-        dispatcher=dp,
-        webhook_path=WEBHOOK_PATH,
-        skip_updates=True,
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        host=WEBAPP_HOST,
-        port=WEBAPP_PORT,
-    )
+logging.basicConfig(level=logging.INFO)
+start_webhook(
+    dispatcher=dp,
+    webhook_path=WEBHOOK_PATH,
+    skip_updates=True,
+    on_startup=on_startup,
+    on_shutdown=on_shutdown,
+    host=WEBAPP_HOST,
+    port=WEBAPP_PORT,
+)
+
+app = FastAPI()
+
+
+@app.get("/")
+async def root():
+    return "ok"
