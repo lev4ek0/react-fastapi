@@ -5,7 +5,6 @@ from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils.executor import start_webhook
 from aiogram import Bot, types
-from fastapi import FastAPI
 
 TOKEN = os.getenv('BOT_TOKEN')
 bot = Bot(token=TOKEN)
@@ -20,14 +19,7 @@ WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.getenv('PORT', default=8000)
-
-app = FastAPI()
-
-
-@app.get("/")
-async def root():
-    return WEBAPP_PORT
+WEBAPP_PORT = os.getenv('PORT')
 
 
 async def on_startup(dispatcher):
