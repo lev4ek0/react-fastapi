@@ -45,6 +45,4 @@ async def handle_photos(message: types.Message):
         response = f'Url is wrong'
     except UnidentifiedImageError:
         response = f'File is not image'
-    except Exception:
-        response = 'Smth went wrong'
     await message.reply(response)
