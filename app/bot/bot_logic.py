@@ -26,7 +26,7 @@ def find_faces(url: str) -> int:
 
 
 @dp.message_handler()
-async def handle_photos(message: types.Message):
+async def handle_urls(message: types.Message):
     url = message.text
     try:
         amount_of_faces = find_faces(url)
@@ -49,8 +49,8 @@ async def handle_photos(message: types.Message):
 
 
 @dp.message_handler(content_types=['document'])
-async def handle_photos(message: types.Message):
-    url = await message.document[-1].get_url()
+async def handle_documents(message: types.Message):
+    url = await message.document.get_url()
     amount_of_faces = find_faces(url)
     await message.reply(
         f'Faces found: {amount_of_faces}'
