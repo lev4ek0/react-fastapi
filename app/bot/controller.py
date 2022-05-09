@@ -7,7 +7,7 @@ from .bot_logic import dp, bot
 router = APIRouter()
 
 
-@router.post(settings.WEBHOOK_PATH, include_in_schema=False)
+@router.post(settings.WEBHOOK_PATH)
 async def bot_webhook(update: dict):
     telegram_update = types.Update(**update)
     Dispatcher.set_current(dp)
