@@ -3,6 +3,7 @@ from io import BytesIO
 import requests
 from aiogram import Dispatcher, Bot, types
 import face_recognition
+from PIL import UnidentifiedImageError
 
 from . import settings
 
@@ -33,9 +34,10 @@ async def handle_urls(message: types.Message):
         await message.reply(
             f'Faces found: {amount_of_faces}'
         )
-    except Exception:
+    except Exception as e:
         await message.reply(
-            'Url is wrong'
+            f'Url is wrong: \n'
+            f'\"{e.__traceback__}\"'
         )
 
 
@@ -50,8 +52,13 @@ async def handle_photos(message: types.Message):
 
 @dp.message_handler(content_types=['document'])
 async def handle_documents(message: types.Message):
-    url = await message.document.get_url()
-    amount_of_faces = find_faces(url)
-    await message.reply(
-        f'Faces found: {amount_of_faces}'
-    )
+    try:
+        url = await message.document.get_url()
+        amount_of_faces = find_faces(url)
+        await message.reply(
+            f'Faces found: {amount_of_faces}'
+        )
+    except UnidentifiedImageError:
+        await message.reply(
+            f'File is not image'
+        )
