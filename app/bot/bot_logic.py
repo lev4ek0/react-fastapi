@@ -18,6 +18,8 @@ async def send_welcome(message: types.Message):
 
 def find_faces(url: str) -> int:
     f = requests.get(url)
+    if f.status_code != 200:
+        raise Exception
     image = face_recognition.load_image_file(BytesIO(f.content))
     face_locations = face_recognition.face_locations(image)
     return len(face_locations)
@@ -26,10 +28,15 @@ def find_faces(url: str) -> int:
 @dp.message_handler()
 async def handle_photos(message: types.Message):
     url = message.text
-    amount_of_faces = find_faces(url)
-    await message.reply(
-        f'Faces found: {amount_of_faces}'
-    )
+    try:
+        amount_of_faces = find_faces(url)
+        await message.reply(
+            f'Faces found: {amount_of_faces}'
+        )
+    except Exception:
+        await message.reply(
+            'Url is wrong'
+        )
 
 
 @dp.message_handler(content_types=['photo', 'files'])
