@@ -22,6 +22,6 @@ def create_app(config="dev"):
 
     @app.on_event('shutdown')
     async def on_shutdown():
-        await bot.session.close()
+        await bot.get_session().close()
 
     return app
