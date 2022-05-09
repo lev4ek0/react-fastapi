@@ -12,15 +12,30 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
-    await message.reply("I can find amount of faces at the photo. Just send me it.")
+    await message.reply("I can find amount of faces at the photo. "
+                        "Just send me it or send me link.")
+
+
+def find_faces(url: str) -> int:
+    f = requests.get(url)
+    image = face_recognition.load_image_file(BytesIO(f.content))
+    face_locations = face_recognition.face_locations(image)
+    return len(face_locations)
+
+
+@dp.message_handler()
+async def handle_photos(message: types.Message):
+    url = message.text
+    amount_of_faces = find_faces(url)
+    await message.reply(
+        f'Faces found: {amount_of_faces}'
+    )
 
 
 @dp.message_handler(content_types=['photo'])
 async def handle_photos(message: types.Message):
     url = await message.photo[-1].get_url()
-    f = requests.get(url)
-    image = face_recognition.load_image_file(BytesIO(f.content))
-    face_locations = face_recognition.face_locations(image)
+    amount_of_faces = find_faces(url)
     await message.reply(
-        f'Лиц найдено: {len(face_locations)}'
+        f'Faces found: {amount_of_faces}'
     )
