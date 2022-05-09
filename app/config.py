@@ -7,7 +7,7 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    TOKEN: str = os.getenv('TOKEN')
+    TOKEN: str = os.getenv('BOT_TOKEN')
     WEBHOOK_HOST: str = os.getenv('WEBHOOK_HOST')
     SECRET: str = os.getenv('SECRET')
     WEBHOOK_PATH: str = f'/webhook/{SECRET}'
