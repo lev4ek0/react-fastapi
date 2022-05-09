@@ -9,23 +9,16 @@ TOKEN = os.getenv('BOT_TOKEN')
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
-
 # webhook settings
-WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
-WEBHOOK_PATH = f'/webhook/{TOKEN}'
+WEBHOOK_HOST = os.getenv('WEBHOOK_HOST')
+SECRET = os.getenv('SECRET')
+WEBHOOK_PATH = f'/webhook/{SECRET}'
 WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 
-# webserver settings
-WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.getenv('PORT')
 
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
-
-
-SECRET = 'secret_code'
 
 
 @dp.message_handler()
@@ -38,11 +31,11 @@ async def on_startup():
     webhook_info = await bot.get_webhook_info()
     if webhook_info.url != WEBHOOK_URL:
         await bot.set_webhook(
-            url=f'{WEBHOOK_HOST}/webhook/{SECRET}'
+            url=WEBHOOK_URL
         )
 
 
-@app.post(f'/webhook/{SECRET}')
+@app.post(f'/{WEBHOOK_PATH}')
 async def bot_webhook(update: dict):
     telegram_update = types.Update(**update)
     Dispatcher.set_current(dp)
