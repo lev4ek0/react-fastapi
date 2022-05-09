@@ -1,7 +1,5 @@
 from .bot.bot_logic import bot
-from .config import get_config
-
-settings = get_config()
+from . import settings
 
 
 async def startup():
