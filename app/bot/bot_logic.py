@@ -23,9 +23,9 @@ async def handle_photos(message: types.Message):
     if len(message.photo) != 0:
         url = message.photo[-1].get_url()
         print(url)
-    print(message.document)
-    url = message.document.get_url()
-    print(url)
+    if message.document is not None:
+        url = message.document.get_url()
+        print(url)
     await message.reply(
         f'Faces found: {1}'
     )
