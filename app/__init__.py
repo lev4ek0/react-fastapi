@@ -2,18 +2,16 @@ from fastapi import FastAPI
 
 from .bot.bot_logic import bot
 from .bot.controller import router
-from .start_app import startup
+from .fastapi_init import startup, shutdown
 
 
 def create_app():
-    app = FastAPI(title="Bot API")
+    app = FastAPI(
+        title="Bot API",
+        on_startup=[startup],
+        on_shutdown=[shutdown]
+    )
 
     app.include_router(router, prefix=f"/api/bot")
-
-    startup()
-
-    @app.on_event('shutdown')
-    async def on_shutdown():
-        await bot.session.close()
 
     return app
