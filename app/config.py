@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     TOKEN: str = os.getenv('BOT_TOKEN')
     WEBHOOK_HOST: str = os.getenv('WEBHOOK_HOST')
     SECRET: str = TOKEN
-    WEBHOOK_PATH: str = f'webhook/{SECRET}'
-    WEBHOOK_URL: str = f'{WEBHOOK_HOST}{API_V1_STR}/bot/{WEBHOOK_PATH}'
+    WEBHOOK_PATH: str = f'/webhook/{SECRET}'
+    WEBHOOK_URL: str = f'{WEBHOOK_HOST}{API_V1_STR}/bot{WEBHOOK_PATH}'
 
 
 @lru_cache

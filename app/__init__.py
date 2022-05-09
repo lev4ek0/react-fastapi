@@ -15,6 +15,6 @@ def create_app():
         on_shutdown=[shutdown]
     )
 
-    app.include_router(router, prefix=f'/{settings.API_V1_STR}/bot')
+    app.include_router(router, prefix=f'{settings.API_V1_STR}/bot')
 
     return app
