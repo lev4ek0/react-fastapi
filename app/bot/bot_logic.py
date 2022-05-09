@@ -38,6 +38,10 @@ async def handle_urls(message: types.Message):
         await message.reply(
             f'Url is wrong'
         )
+    except UnidentifiedImageError:
+        await message.reply(
+            f'File is not image'
+        )
 
 
 @dp.message_handler(content_types=['photo'])
