@@ -13,4 +13,7 @@ async def echo(message: types.Message):
 
 @dp.message_handler(content_types=['photo'])
 async def handle_photos(message: types.Message):
-    await message.answer(str(message.photo[-1].file_size))
+    await message.answer(
+        f'Size: {message.photo[-1].file_size}\n'
+        f'Url: {message.photo[-1].get_url()}\n'
+    )
