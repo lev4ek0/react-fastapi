@@ -1,7 +1,9 @@
 from aiogram import Dispatcher, Bot, types
 
-from . import settings
+from app import get_config
 
+
+settings = get_config("dev")
 bot = Bot(token=settings.TOKEN)
 dp = Dispatcher(bot)
 

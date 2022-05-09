@@ -1,7 +1,4 @@
-from .. import get_config
-
 BASE_ROUTE = "bot"
-settings = get_config(config="dev")
 
 
 def register_routes(app, root="api"):
