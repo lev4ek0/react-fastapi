@@ -4,11 +4,10 @@ from aiogram import types, Dispatcher, Bot
 from . import settings
 from .bot_logic import dp, bot
 
-
 router = APIRouter()
 
 
-@router.post(settings.WEBHOOK_PATH)
+@router.post(settings.WEBHOOK_PATH, include_in_schema=False)
 async def bot_webhook(update: dict):
     print(update)
     telegram_update = types.Update(**update)
