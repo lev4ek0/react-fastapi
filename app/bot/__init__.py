@@ -1,5 +1,3 @@
-from .model import Widget  # noqa
-from .schema import WidgetSchema  # noqa
 from .. import get_config
 
 BASE_ROUTE = "bot"
