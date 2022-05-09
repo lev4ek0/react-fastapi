@@ -28,7 +28,7 @@ async def get_url(message: types.Message) -> str:
 
 
 @lru_cache
-async def find_faces(url: str) -> int:
+def find_faces(url: str) -> int:
     f = requests.get(url)
     image = face_recognition.load_image_file(BytesIO(f.content))
     face_locations = face_recognition.face_locations(image)
@@ -39,10 +39,12 @@ async def find_faces(url: str) -> int:
 async def handle_photos(message: types.Message):
     url = await get_url(message)
     try:
-        amount_of_faces = await find_faces(url)
+        amount_of_faces = find_faces(url)
         response = f'Faces found: {amount_of_faces}'
     except requests.exceptions.MissingSchema:
-        response = f'Url is wrong'
+        response = 'Url is wrong'
     except UnidentifiedImageError:
-        response = f'File is not image'
+        response = 'File is not image'
+    except Exception:
+        response = 'Smth went wrong'
     await message.reply(response)
