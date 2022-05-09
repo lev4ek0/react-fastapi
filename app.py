@@ -25,12 +25,24 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 
 
+SECRET = 'secret_code'
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
     await message.answer(message.text)
 
 
-@app.post(f'{WEBHOOK_PATH}')
+@app.on_event('startup')
+async def on_startup():
+    webhook_info = await bot.get_webhook_info()
+    if webhook_info.url != WEBHOOK_URL:
+        await bot.set_webhook(
+            url=f'{WEBHOOK_HOST}/webhook/{SECRET}'
+        )
+
+
+@app.post(f'/webhook/{SECRET}')
 async def bot_webhook(update: dict):
     telegram_update = types.Update(**update)
     Dispatcher.set_current(dp)
@@ -38,9 +50,6 @@ async def bot_webhook(update: dict):
     await dp.process_update(telegram_update)
 
 
-@app.post(f'{WEBHOOK_PATH.replace(":", "%3A")}')
-async def bot_webhook(update: dict):
-    telegram_update = types.Update(**update)
-    Dispatcher.set_current(dp)
-    Bot.set_current(bot)
-    await dp.process_update(telegram_update)
+@app.on_event('shutdown')
+async def on_shutdown():
+    await bot.session.close()
