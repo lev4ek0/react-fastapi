@@ -1,3 +1,4 @@
+from functools import lru_cache
 from io import BytesIO
 
 import requests
@@ -26,6 +27,7 @@ async def get_url(message: types.Message) -> str:
     return url
 
 
+@lru_cache
 async def find_faces(url: str) -> int:
     f = requests.get(url)
     image = face_recognition.load_image_file(BytesIO(f.content))
