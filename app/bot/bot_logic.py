@@ -26,42 +26,45 @@ def find_faces(url: str) -> int:
     return len(face_locations)
 
 
-@dp.message_handler()
-async def handle_urls(message: types.Message):
-    url = message.text
-    try:
-        amount_of_faces = find_faces(url)
-        await message.reply(
-            f'Faces found: {amount_of_faces}'
-        )
-    except requests.exceptions.MissingSchema:
-        await message.reply(
-            f'Url is wrong'
-        )
-    except UnidentifiedImageError:
-        await message.reply(
-            f'File is not image'
-        )
+# @dp.message_handler()
+# async def handle_urls(message: types.Message):
+#     url = message.text
+#     try:
+#         amount_of_faces = find_faces(url)
+#         await message.reply(
+#             f'Faces found: {amount_of_faces}'
+#         )
+#     except requests.exceptions.MissingSchema:
+#         await message.reply(
+#             f'Url is wrong'
+#         )
+#     except UnidentifiedImageError:
+#         await message.reply(
+#             f'File is not image'
+#         )
 
 
-@dp.message_handler(content_types=['photo'])
+@dp.message_handler(content_types=['photo', 'document', 'text'])
 async def handle_photos(message: types.Message):
-    url = await message.photo[-1].get_url()
-    amount_of_faces = find_faces(url)
+    print(message.text)
+    url = message.photo[-1].get_url()
+    print(url)
+    url = message.document.get_url()
+    print(url)
     await message.reply(
-        f'Faces found: {amount_of_faces}'
+        f'Faces found: {1}'
     )
 
 
-@dp.message_handler(content_types=['document'])
-async def handle_documents(message: types.Message):
-    try:
-        url = await message.document.get_url()
-        amount_of_faces = find_faces(url)
-        await message.reply(
-            f'Faces found: {amount_of_faces}'
-        )
-    except UnidentifiedImageError:
-        await message.reply(
-            f'File is not image'
-        )
+# @dp.message_handler(content_types=['document'])
+# async def handle_documents(message: types.Message):
+#     try:
+#         url = await message.document.get_url()
+#         amount_of_faces = find_faces(url)
+#         await message.reply(
+#             f'Faces found: {amount_of_faces}'
+#         )
+#     except UnidentifiedImageError:
+#         await message.reply(
+#             f'File is not image'
+#         )
