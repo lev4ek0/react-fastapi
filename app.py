@@ -25,15 +25,14 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 
 
-@app.post('/webhook')
+@dp.message_handler()
+async def echo(message: types.Message):
+    await message.answer(message.text)
+
+
+@app.post(f'{WEBHOOK_PATH}')
 async def bot_webhook(update: dict):
     telegram_update = types.Update(**update)
     Dispatcher.set_current(dp)
     Bot.set_current(bot)
     await dp.process_update(telegram_update)
-
-
-@dp.message_handler()
-async def echo(message: types.Message):
-    await message.answer(message.text)
-
