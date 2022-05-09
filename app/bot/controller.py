@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from aiogram import types, Dispatcher, Bot
 
 from . import settings
-from bot_logic import dp, bot
+from .bot_logic import dp, bot
 
 
 router = APIRouter()
