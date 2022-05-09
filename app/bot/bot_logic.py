@@ -39,7 +39,7 @@ async def handle_photos(message: types.Message):
         )
 
 
-@dp.message_handler(content_types=['photo', 'files', 'file'])
+@dp.message_handler(content_types=['photo', 'document'])
 async def handle_photos(message: types.Message):
     url = await message.photo[-1].get_url()
     amount_of_faces = find_faces(url)
