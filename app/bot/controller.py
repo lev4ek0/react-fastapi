@@ -1,11 +1,10 @@
 from fastapi import APIRouter
 from aiogram import types, Dispatcher, Bot
 
-from app import get_config
+from . import settings
 from bot_logic import dp, bot
 
 
-settings = get_config("dev")
 router = APIRouter()
 
 

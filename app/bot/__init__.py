@@ -1,3 +1,7 @@
+from .. import config
+
+
+settings = config.get_config("dev")
 BASE_ROUTE = "bot"
 
 
