@@ -45,6 +45,7 @@ async def on_startup():
 @app.post(f'/webhook/{SECRET}')
 async def bot_webhook(update: dict):
     telegram_update = types.Update(**update)
+    Bot.set_current(bot)
     await dp.process_update(telegram_update)
 
 
