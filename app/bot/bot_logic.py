@@ -29,11 +29,15 @@ def find_faces(url: str) -> int:
 @dp.message_handler()
 async def handle_urls(message: types.Message):
     url = message.text
-    amount_of_faces = find_faces(url)
-    await message.reply(
-        f'Faces found: {amount_of_faces}'
-    )
-
+    try:
+        amount_of_faces = find_faces(url)
+        await message.reply(
+            f'Faces found: {amount_of_faces}'
+        )
+    except requests.exceptions.MissingSchema:
+        await message.reply(
+            f'Url is wrong'
+        )
 
 
 @dp.message_handler(content_types=['photo'])
