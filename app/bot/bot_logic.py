@@ -8,5 +8,9 @@ dp = Dispatcher(bot)
 
 @dp.message_handler()
 async def echo(message: types.Message):
-    print(message)
     await message.answer(message.text)
+
+
+@dp.message_handler(content_types=['photo'])
+async def handle_photos(message: types.Message):
+    await message.answer(str(message.photo[-1].file_size))
