@@ -6,6 +6,7 @@ import requests
 from aiogram import Dispatcher, Bot, types
 import face_recognition
 from PIL import UnidentifiedImageError, Image
+from aiogram.types import InputMediaPhoto
 
 from . import settings
 
@@ -68,7 +69,9 @@ async def handle_photos(message: types.Message):
             b = BytesIO()
             face.save(b, 'png')
             im_bytes = b.getvalue()
-            await message.reply_photo(photo=im_bytes)
+            a = InputMediaPhoto(media=im_bytes, caption='a')
+            b = InputMediaPhoto(media=im_bytes, caption='b')
+            await message.reply_media_group([a, b])
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
     except UnidentifiedImageError:
