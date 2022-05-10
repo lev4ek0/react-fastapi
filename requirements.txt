@@ -29,6 +29,7 @@ python-multipart==0.0.5
 pytz==2022.1
 PyYAML==6.0
 requests==2.27.1
+retina-face==0.0.10
 six==1.16.0
 sniffio==1.2.0
 starlette==0.18.0

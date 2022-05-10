@@ -61,9 +61,9 @@ def _find_face(image, face_locations):
 def process_photo_by_url(url):
     image = _get_image(url=url)
     face_locations = _get_face_locations(image=image)
-    amount_of_faces = len(face_locations)
     face = _find_face(image=image, face_locations=face_locations)
     bytes_face = BytesIO()
     face.save(bytes_face, 'png')
     photo = bytes_face.getvalue()
+    amount_of_faces = len(face_locations)
     return photo, amount_of_faces
