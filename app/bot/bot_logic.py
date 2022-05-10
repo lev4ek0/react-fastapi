@@ -52,7 +52,8 @@ def find_face(url: str):
 
         # You can access the actual face itself like this:
         face_image = image[top:bottom, left:right]
-        return face_image
+        pil_image = Image.fromarray(face_image)
+        return pil_image
     return None
 
 
@@ -67,7 +68,7 @@ async def handle_photos(message: types.Message):
             media = types.MediaGroup()
             media.attach_photo(face,
                                'Превосходная фотография')
-            await message.reply_photo(photo=media)
+            await message.reply_media_group(media=media)
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
     except UnidentifiedImageError:
