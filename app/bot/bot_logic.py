@@ -65,11 +65,7 @@ async def handle_photos(message: types.Message):
         face = find_face(url)
         response = f'Faces found: {amount_of_faces}'
         if face is not None:
-            b = BytesIO()
-            face.save(b, 'png')
-            im_bytes = b.getvalue()
-            media = types.InputMediaPhoto(im_bytes, 'фотка')
-            await message.reply_media_group(media=[media, media])
+            await message.reply_photo(photo=face)
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
     except UnidentifiedImageError:
