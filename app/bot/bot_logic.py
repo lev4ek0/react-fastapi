@@ -69,17 +69,23 @@ def find_face(image, face_locations):
     return pil_image
 
 
+@lru_cache
+def process_photo_by_url(url):
+    image = get_image(url=url)
+    face_locations = get_face_locations(image=image)
+    amount_of_faces = len(face_locations)
+    face = find_face(image=image, face_locations=face_locations)
+    bytes_face = BytesIO()
+    face.save(bytes_face, 'png')
+    photo = bytes_face.getvalue()
+    return photo, amount_of_faces
+
+
 @dp.message_handler(content_types=['text', 'photo', 'document'])
 async def handle_photos(message: types.Message):
     url = await get_url(message)
     try:
-        image = get_image(url=url)
-        face_locations = get_face_locations(image=image)
-        amount_of_faces = len(face_locations)
-        face = find_face(image=image, face_locations=face_locations)
-        bytes_face = BytesIO()
-        face.save(bytes_face, 'png')
-        photo = bytes_face.getvalue()
+        photo, amount_of_faces = process_photo_by_url(url)
         response = f'Faces found: {amount_of_faces}'
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
