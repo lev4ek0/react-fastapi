@@ -1,3 +1,4 @@
+import traceback
 from functools import lru_cache
 from io import BytesIO
 
@@ -73,5 +74,5 @@ async def handle_photos(message: types.Message):
     except UnidentifiedImageError:
         response = 'File is not image'
     except Exception:
-        response = 'Smth went wrong'
+        response = f'Smth went wrong:{traceback.format_exc()}'
     await message.reply(response)
