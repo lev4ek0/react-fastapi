@@ -29,37 +29,44 @@ async def get_url(message: types.Message) -> str:
     return url
 
 
-def get_image(url: str):
+def get_image(url):
     f = requests.get(url)
     image = face_recognition.load_image_file(BytesIO(f.content))
     return image
 
 
 @lru_cache
-def find_faces(url: str) -> int:
-    image = get_image(url)
+def get_face_locations(image):
     face_locations = face_recognition.face_locations(image)
-    return len(face_locations)
+    return face_locations
 
 
-def lighting_image(img, coef):
-    img = np.array(img) * coef
-    return img.astype(np.uint8)
-
-
-@lru_cache
-def find_face(url: str):
-    image = get_image(url)
-    face_locations = face_recognition.face_locations(image)
+def get_faces(image, face_locations):
     faces = []
     for face_location in face_locations:
         top, right, bottom, left = face_location
         face_image = image[top:bottom, left:right]
         faces.append((face_location, face_image))
-    image = lighting_image(image, 0.5)
-    for face in faces:
-        top, right, bottom, left = face[0]
-        image[top:bottom, left:right] = face[1]
+    return faces
+
+
+def darken_image(img, coef):
+    img = np.array(img) * coef
+    return img.astype(np.uint8)
+
+
+def add_objects_to_photo(objects, image):
+    for _ in objects:
+        top, right, bottom, left = _[0]
+        image[top:bottom, left:right] = _[1]
+
+
+@lru_cache
+def find_face(image, face_locations):
+    faces = get_faces(image=image, face_locations=face_locations)
+    if faces:
+        image = darken_image(image, 0.5)
+    add_objects_to_photo(objects=faces, image=image)
     pil_image = Image.fromarray(image)
     return pil_image
 
@@ -68,18 +75,20 @@ def find_face(url: str):
 async def handle_photos(message: types.Message):
     url = await get_url(message)
     try:
-        amount_of_faces = find_faces(url)
-        face = find_face(url)
+        image = get_image(url=url)
+        face_locations = get_face_locations(image=image)
+        amount_of_faces = len(face_locations)
+        face = find_face(image=image, face_locations=face_locations)
+        bytes_face = BytesIO()
+        face.save(bytes_face, 'png')
+        photo = bytes_face.getvalue()
         response = f'Faces found: {amount_of_faces}'
-        if face is not None:
-            bytes_face = BytesIO()
-            face.save(bytes_face, 'png')
-            photo = bytes_face.getvalue()
-            await message.reply_photo(photo=photo, caption=response)
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
     except UnidentifiedImageError:
         response = 'File is not image'
     except Exception:
         response = f'Smth went wrong:{traceback.format_exc()}'
+    else:
+        return await message.reply_photo(photo=photo, caption=response)
     await message.reply(response)
