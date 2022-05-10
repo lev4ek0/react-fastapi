@@ -68,7 +68,7 @@ async def handle_photos(message: types.Message):
             b = BytesIO()
             face.save(b, 'png')
             im_bytes = b.getvalue()
-            media = types.InputMediaPhoto(im_bytes)
+            media = types.InputMediaPhoto(im_bytes, 'фотка')
             await message.reply_media_group(media=[media, media])
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
