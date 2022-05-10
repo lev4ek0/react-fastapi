@@ -52,8 +52,7 @@ def find_face(url: str):
 
         # You can access the actual face itself like this:
         face_image = image[top:bottom, left:right]
-        pil_image = Image.fromarray(face_image)
-        return pil_image
+        return face_image
     return None
 
 
