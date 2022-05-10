@@ -43,10 +43,8 @@ def find_faces(url: str) -> int:
 
 
 def lighting_image(img, coef):
-    img = np.array(img) / 255
-    img = img + img * coef
-    img[img > 1] = 1
-    return img
+    img = np.array(img) * coef
+    return img.astype(np.uint8)
 
 
 @lru_cache
