@@ -35,7 +35,6 @@ def get_image(url):
     return image
 
 
-@lru_cache
 def get_face_locations(image):
     face_locations = face_recognition.face_locations(image)
     return face_locations
@@ -61,7 +60,6 @@ def add_objects_to_photo(objects, image):
         image[top:bottom, left:right] = _[1]
 
 
-@lru_cache
 def find_face(image, face_locations):
     faces = get_faces(image=image, face_locations=face_locations)
     if faces:
