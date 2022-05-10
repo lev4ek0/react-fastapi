@@ -2,11 +2,11 @@ import traceback
 from functools import lru_cache
 from io import BytesIO
 
+import numpy as np
 import requests
 from aiogram import Dispatcher, Bot, types
 import face_recognition
 from PIL import UnidentifiedImageError, Image
-from aiogram.types import InputMediaPhoto
 
 from . import settings
 
@@ -42,20 +42,28 @@ def find_faces(url: str) -> int:
     return len(face_locations)
 
 
+def lighting_image(img, coef):
+    img = np.array(img) / 255
+    img = img + img * coef
+    img[img > 1] = 1
+    return img
+
+
 @lru_cache
 def find_face(url: str):
     image = get_image(url)
     face_locations = face_recognition.face_locations(image)
-    if len(face_locations) > 0:
-        face_location = face_locations[0]
-        # Print the location of each face in this image
+    faces = []
+    for face_location in face_locations:
         top, right, bottom, left = face_location
-
-        # You can access the actual face itself like this:
         face_image = image[top:bottom, left:right]
-        pil_image = Image.fromarray(face_image)
-        return pil_image
-    return None
+        faces.append((face_location, face_image))
+    image = lighting_image(image, 0.5)
+    for face in faces:
+        top, right, bottom, left = face[0]
+        image[top:bottom, left:right] = face[1]
+    pil_image = Image.fromarray(image)
+    return pil_image
 
 
 @dp.message_handler(content_types=['text', 'photo', 'document'])
@@ -66,12 +74,10 @@ async def handle_photos(message: types.Message):
         face = find_face(url)
         response = f'Faces found: {amount_of_faces}'
         if face is not None:
-            b = BytesIO()
-            face.save(b, 'png')
-            im_bytes = b.getvalue()
-            a = InputMediaPhoto(media=im_bytes, caption='a')
-            b = InputMediaPhoto(media=im_bytes, caption='b')
-            await message.reply_media_group([a, b])
+            bytes_face = BytesIO()
+            face.save(bytes_face, 'png')
+            photo = bytes_face.getvalue()
+            await message.reply_photo(photo=photo, caption=response)
     except requests.exceptions.MissingSchema:
         response = 'Url is wrong'
     except UnidentifiedImageError:
