@@ -4,8 +4,8 @@ from io import BytesIO
 import numpy as np
 import requests
 from aiogram import types
-import face_recognition
 from PIL import Image
+import face_recognition
 
 
 async def get_url(message: types.Message) -> str:
